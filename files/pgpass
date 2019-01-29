@@ -1,0 +1,2 @@
+# Format for .pgpass file
+*:5444:*:repuser:password

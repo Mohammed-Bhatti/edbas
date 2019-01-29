@@ -1,0 +1,13 @@
+#!/bin/bash
+# Wraps ifconfig command
+
+if [ $UID -eq 0 ]
+then
+        echo "Executing: /sbin/ifconfig $@"
+        /sbin/ifconfig $@
+else
+        echo "Executing: sudo /sbin/ifconfig $@"
+        sudo /sbin/ifconfig $@
+fi
+
+exit 0

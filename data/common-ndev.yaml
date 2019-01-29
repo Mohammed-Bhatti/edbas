@@ -1,0 +1,5 @@
+---
+edbas::set_pg_fw_port::dbport: 5444
+# Add Solarwinds host and service to hosts.allow
+edbas::set_pg_fw_port::pattern: 
+edbas::set_pg_fw_port::svc: 'snmpd'

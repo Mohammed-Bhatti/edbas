@@ -1,0 +1,12 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+# User specific aliases and functions
+PATH=/usr/edb/as9.6/bin:$PATH
+PGDATA=<%= @recovery_conf_dir %>; export PGDATA
+alias ntslp='watch -n5 df -h'
+alias psql='psql -U enterprisedb -d edb'

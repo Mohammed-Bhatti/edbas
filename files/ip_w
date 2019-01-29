@@ -1,0 +1,13 @@
+#!/bin/bash
+# Wraps ip command
+
+if [ $UID -eq 0 ]
+then
+        echo "Executing: /sbin/ip $@"
+        /sbin/ip $@
+else
+        echo "Executing: sudo /sbin/ip $@"
+        sudo /sbin/ip $@
+fi
+
+exit 0

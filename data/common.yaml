@@ -1,0 +1,298 @@
+---
+#Turn AIDE On
+aide::enable: true
+#
+edbas::edbaspkgs::jre_pkg: 'jre1.8.0_141'
+#
+edbas::set_logrotate::audit_file: '/data/edb/as9.6/data/edb_audit/audit_log.csv'
+edbas::set_edbas_repo::baseurl: 'http://puppet.catapult.ndev.coic.mil/yum/Railgun/edbas/'
+#edbas::set_edbas_repo::baseurl: 'http://ntrhel7rpm01.atac.mil/repos/enterprisedb/'
+edbas::set_edbas_repo::repo_name: 'edbas'
+edbas::set_edbas_repo::repo_descr: 'EnterpriseDB Advanced Server 96'
+#
+edbas::ssl_copy_files::pgdata: '/data/edb/as9.6/data'
+#
+edbas::create_roles::repuser_pwd: 'password'
+edbas::create_roles::efm_pwd: 'password'
+edbas::create_roles::connection_limit: '500'
+#
+edbas::create_server::version: '9.6'
+edbas::create_server::service_manage: false
+edbas::create_server::initdb_path: '/usr/edb/as9.6/bin/initdb'
+edbas::create_server::datadir: '/data/edb/as9.6/data'
+edbas::create_server::user: 'enterprisedb'
+edbas::create_server::group: 'enterprisedb'
+edbas::create_server::port: 5444
+edbas::create_server::postgresql_conf_path: '/data/edb/as9.6/data/postgresql.conf'
+edbas::create_server::createdb_path: '/data/edb/as9.6/data'
+edbas::create_server::pg_hba_conf_path: '/data/edb/as9.6/data/pg_hba.conf'
+edbas::create_server::pg_ident_conf_path: '/data/edb/as9.6/data/pg_ident.conf'
+edbas::create_server::psql_path: '/usr/edb/as9.6/bin/psql'
+edbas::create_server::package_ensure: 'absent'
+#
+edbas::set_pg_fw_port::dbport: 5444
+#edbas::set_pg_fw_port::pgpool_ports: [9000,9694,9898,9999]
+edbas::set_pg_fw_port::efm_ports: [7444,7800]
+edbas::edbasbaseline::dirs: [ 
+            '/data/edb',
+            '/data/edb/as9.6',
+            '/data/edb/as9.6/backups',
+            '/data/edb/as9.6/repmgr',
+            '/data/edb/as9.6/archive',
+            '/data/edb/as9.6/temp',
+            '/var/lib/edb/as9.6',
+            '/var/lib/edb', ]
+edbas::edbasbaseline::license: '40088-3DF69-B3D90-7XCZS-WS9HX'
+edbas::edbasbaseline::jre_security_path: '/usr/java/latest/lib/security'
+#edbas::edbasbaseline::ping_server: '10.85.10.209'
+#edbas::edbasbaseline::db_user: 'enterprisedb'
+edbas::edbasbaseline::db_user: 'efm'
+edbas::edbasbaseline::db_port: 5444
+edbas::edbasbaseline::database: 'edb'
+#edbas::edbasbaseline::database: 'fmdb'
+edbas::edbasbaseline::db_service_owner: 'enterprisedb'
+edbas::edbasbaseline::bin_dir: '/usr/edb/as9.6/bin'
+edbas::edbasbaseline::recovery_conf_dir: '/data/edb/as9.6/data'
+edbas::edbasbaseline::temp_dir: '/data/edb/as9.6/temp'
+edbas::edbasbaseline::user_email: 'bhattim@coic.ndev.mil'
+edbas::edbasbaseline::admin_port: 7444
+#
+edbas::create_encfs::encfs: '/data/edb/as9.6/data2'
+edbas::create_encfs::encfs_mtpt: '/data/edb/as9.6/data2_encrypted'
+edbas::create_encfs::encfspasswd: 'password'
+#
+edbas::set_common_postgresql_rules::params: 
+  listen_addresses:
+    value: '*'
+  cluster_name:
+    value: 'edb_cluster'
+  shared_preload_libraries:
+    value: '$libdir/sqlprotect'
+  edb_sql_protect.enabled:
+    value: 'on'
+  edb_sql_protect.level:
+    value: 'learn'
+  edb_sql_protect.max_protected_roles:
+    value: '64'
+  edb_sql_protect.max_protected_relations:
+    value: '1024'
+  edb_sql_protect.max_queries_to_save:
+    value: '5000'
+  wal_level:
+    value: 'hot_standby'
+  timed_statistics:
+    value: 'on'
+  archive_mode:
+    value: 'on'
+  archive_command:
+    value: 'test ! -f /data/edb/as9.6/archive/%f && cp %p /data/edb/as9.6/archive/%f'
+  max_wal_senders:
+    value: '10'
+  wal_keep_segments:
+    value: '5000'
+  hot_standby:
+    value: 'on'
+  log_checkpoints:
+    value: 'on'
+  log_connections:
+    value: 'on'
+  log_disconnections:
+    value: 'on'
+  log_lock_waits:
+    value: 'on'
+  log_statement:
+    value: 'mod'
+  log_temp_files:
+    value: '0'
+#  max_replication_slots:
+#    value: '3'
+  max_wal_size:
+    value: 2GB
+  maintenance_work_mem:
+    value: 2GB
+  checkpoint_completion_target:
+    value: 0.9
+  effective_cache_size:
+    value: 1GB
+  work_mem:
+    value: 320MB
+  shared_buffers:
+    value: 4GB
+  min_wal_size:
+    value: 1GB
+  max_connections:
+    value: 1024
+  log_file_mode:
+    value: '0600'
+  client_min_messages:
+    value: error
+  syslog_ident:
+    value: 'postgres'
+  log_hostname:
+    value: 'on'
+  log_destination:
+    value: 'syslog'
+  syslog_facility:
+    value: 'LOCAL0'
+  ssl:
+    value: 'true'
+  ssl_cert_file:
+    value: 'server.crt'
+  ssl_key_file:
+    value: 'server.key'
+  ssl_ca_file:
+    value: 'ca.crt'
+  ssl_crl_file:
+    value: ''
+    #value: 'root.crl.pem'
+  log_error_verbosity:
+    value: default
+  statement_timeout:
+    value: 1000000000
+  tcp_keepalives_idle:
+    value: 10
+  tcp_keepalives_interval:
+    value: 10
+  tcp_keepalives_count:
+    value: 10
+  pgpool.pg_ctl:
+    value: '/usr/edb/as9.6/bin/pg_ctl'
+  edb_audit:
+    value: 'csv'
+  edb_audit_directory:
+    value: 'edb_audit'
+  edb_audit_filename:
+    value: 'audit_log'
+  edb_audit_statement:
+    value: 'all'
+  edb_audit_connect:
+    value: 'all'
+  edb_audit_disconnect:
+    value: 'all'
+  edb_redwood_date:
+    value: 'off'
+  edb_redwood_greatest_least:
+    value: 'off'
+  edb_redwood_strings:
+    value: 'off'
+edbas::set_overrides_postgresql_rules::params:
+  listen_addresses:
+    value: '*'
+  cluster_name:
+    value: 'edb_cluster'
+  shared_preload_libraries:
+    value: '$libdir/sqlprotect'
+  edb_sql_protect.enabled:
+    value: 'off'
+  edb_sql_protect.level:
+    value: 'learn'
+  edb_sql_protect.max_protected_roles:
+    value: '64'
+  edb_sql_protect.max_protected_relations:
+    value: '1024'
+  edb_sql_protect.max_queries_to_save:
+    value: '5000'
+  wal_level:
+    value: 'replica'
+  timed_statistics:
+    value: 'on'
+  archive_mode:
+    value: 'on'
+  archive_command:
+    value: 'test ! -f /data/edb/as9.6/archive/%f && cp %p /data/edb/as9.6/archive/%f'
+  log_min_duration_statement:
+    value: -1
+  log_checkpoints:
+    value: 'on'
+  log_connections:
+    value: 'on'
+  log_disconnections:
+    value: 'on'
+  log_lock_waits:
+    value: 'on'
+  log_statement:
+    value: 'mod'
+  log_temp_files:
+    value: '0'
+  max_wal_size:
+    value: 2GB
+  maintenance_work_mem:
+    value: 2GB
+  checkpoint_completion_target:
+    value: 0.9
+  effective_cache_size:
+    value: 1GB
+  work_mem:
+    value: 320MB
+  shared_buffers:
+    value: 1GB
+  min_wal_size:
+    value: 1GB
+  max_connections:
+    value: 1024
+  log_file_mode:
+    value: '0600'
+  client_min_messages:
+    value: error
+  syslog_ident:
+    value: 'postgres'
+  log_hostname:
+    value: 'on'
+  log_destination:
+    value: 'syslog'
+  syslog_facility:
+    value: 'LOCAL0'
+  ssl:
+    value: 'true'
+  ssl_cert_file:
+    value: 'server.crt'
+  ssl_key_file:
+    value: 'server.key'
+  ssl_ca_file:
+    value: 'ca.crt'
+  ssl_crl_file:
+    value: ''
+    #value: 'root.crl.pem'
+  log_error_verbosity:
+    value: default
+  statement_timeout:
+    value: 1000000000
+  tcp_keepalives_idle:
+    value: 10
+  tcp_keepalives_interval:
+    value: 10
+  tcp_keepalives_count:
+    value: 10
+  pgpool.pg_ctl:
+    value: '/usr/edb/as9.6/bin/pg_ctl'
+  edb_audit:
+    value: 'csv'
+  edb_audit_statement:
+    value: 'all'
+  edb_audit_connect:
+    value: 'all'
+  edb_audit_disconnect:
+    value: 'all'
+  edb_audit_filename:
+    value: 'audit_log'
+  edb_redwood_date:
+    value: 'off'
+  edb_redwood_greatest_least:
+    value: 'off'
+  edb_redwood_strings:
+    value: 'off'
+edbas::set_overrides_postgresql_rules::params:
+
+#####################
+# pgpool parameters #
+#####################
+# default parameters for edbas module, you can only set hieradata that starts with edbas::
+# don't put anything sensitive in here
+# anything in external hieradata will override values in here
+
+#####################
+# pgpool parameters #
+#####################
+# default parameters for edbas module, you can only set hieradata that starts with edbas::
+# don't put anything sensitive in here
+# anything in external hieradata will override values in here
